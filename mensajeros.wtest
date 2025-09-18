@@ -54,6 +54,17 @@ describe "Test de mensajeros primera parte " {
         camion.acoplados(3)
 	    assert.notThat(paquete.puedeSerEntregadoPor(morfeo))
     }
+
+	test "neo con credito no puede llevar un paquete no pago a matrix" {
+	    neo.credito(true)
+		paquete.destino(matrix)
+		assert.notThat(paquete.puedeSerEntregadoPor(neo))
+	}
+
+	test "neo sin credito puede llevar un paquete pago al puente" {
+		paquete.pagar()
+		assert.that(paquete.puedeSerEntregadoPor(neo))
+	}
 }
 
 
