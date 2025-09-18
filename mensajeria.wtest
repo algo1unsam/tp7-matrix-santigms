@@ -2,7 +2,120 @@ import mensajeria.*
 import mensajeros.*
 
 
-describe "2 " {}
+describe "parte 2" {
+    test "contratar un mensajero" {
+      mensajeria.contratar(neo)
+      assert.equals(#{neo}, mensajeria.mensajeros())
+    }
+
+    test "despedir un mensajero" {
+      mensajeria.contratar(neo)
+      mensajeria.contratar(morfeo)
+      mensajeria.contratar(trinity)
+      mensajeria.despedir(neo)
+      assert.equals(#{morfeo,trinity}, mensajeria.mensajeros())
+    }
+
+    test "despedir todos los mensajeros" {
+      mensajeria.contratar(neo)
+      mensajeria.contratar(morfeo)
+      mensajeria.contratar(trinity)
+      mensajeria.despedirATodos()
+      assert.equals(#{}, mensajeria.mensajeros())
+    }
+
+    test "la mensajeria es grande?" {
+      mensajeria.contratar(neo)
+      mensajeria.contratar(morfeo)
+      mensajeria.contratar(trinity)
+      assert.that(mensajeria.esGrande())
+    }
+
+    test "un paquete puede ser entregado por el primer empleado de la empresa?" {
+      paquete.pagar()
+      mensajeria.contratar(trinity)
+      mensajeria.contratar(neo)
+      mensajeria.contratar(morfeo)
+      assert.that(mensajeria.paquetePuedeSerEntregadoPorPrimero())
+    }
+
+    test "peso del ultimo mensajero de la empresa" {
+      mensajeria.contratar(neo)
+      mensajeria.contratar(morfeo)
+      mensajeria.contratar(trinity)
+      assert.equals(900, mensajeria.pesoUltimoMensajero())
+    }
+}
 
 
-describe "3 " {}
+describe "parte 3" {
+  test "paquete puede ser entregado por la empresa" {
+      paquete.pagar()
+      mensajeria.contratar(neo)
+      mensajeria.contratar(morfeo)
+      mensajeria.contratar(trinity)
+      assert.that(mensajeria.puedeEntregarPaquete(paquete))
+  }
+  
+  test "que mensajeros pueden entregar el paquete" {
+    mensajeria.contratar(neo)
+    mensajeria.contratar(morfeo)
+    mensajeria.contratar(trinity)
+    assert.equals(#{neo, trinity, morfeo}, mensajeria.quienesPuedenEntregarPaquete(paquetito))
+  }
+
+  test "mensajeria con sobrepeso" {
+    mensajeria.contratar(neo)
+    mensajeria.contratar(morfeo)
+    mensajeria.contratar(trinity)
+    assert.equals(496.66667, mensajeria.promedioPeso())
+  }
+
+  test "envio de paquetes" {
+    paquete.pagar()
+    mensajeria.contratar(neo)
+    mensajeria.contratar(morfeo)
+    mensajeria.contratar(trinity)
+    mensajeria.enviarPaquete(paquete)
+    mensajeria.enviarPaquete(paqueton)
+    assert.equals(mensajeria.paquetesEnviados(),[paquete])
+    assert.equals([paqueton], pendientes.paquetes())
+  }
+
+  test "facturacion" {
+    paquete.pagar()
+    paqueton.pagarTodo()
+    paqueton.destinos(2)
+    mensajeria.contratar(neo)
+    mensajeria.contratar(morfeo)
+    mensajeria.contratar(trinity)
+    mensajeria.enviarPaquete(paquete)
+    assert.equals(mensajeria.facturacion(), 50)
+    mensajeria.enviarPaquete(paqueton)
+    assert.equals(mensajeria.facturacion(), 250)
+  }
+
+  test "enviar conjunto de paquetes" {
+    mensajeria.contratar(neo)
+    mensajeria.contratar(morfeo)
+    mensajeria.contratar(trinity)
+    paquete.pagar()
+    mensajeria.enviarPaquetes([paquete, paquetito, paqueton])
+    assert.equals([paqueton, paquete], pendientes.paquetes())
+  }
+
+  test "enviar paquete pendiente mas caro" {
+    mensajeria.contratar(neo)
+    mensajeria.contratar(morfeo)
+    mensajeria.contratar(trinity)
+    mensajeria.enviarPaquetes([paqueton, paquete, paquetito])
+    assert.equals([paqueton, paquete], pendientes.paquetes())
+    paqueton.nuevoDestino(puente)
+    paqueton.pagarTodo()
+    pendientes.enviarPaqueteMasCaro()
+    assert.equals([paquete], pendientes.paquetes())
+  }
+
+  //ultimos dos tests no andan correctamente y no se como corregirlos, =(
+
+}
